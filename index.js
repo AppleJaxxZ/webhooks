@@ -3,16 +3,23 @@ const mongoose = require('mongoose');
 const app = express();
 const cors = require('cors');
 const path = require('path');
+const stripe = require('stripe')(process.env.STRIPE_SECERET);
 require('dotenv').config()
+const User = require('./models/user')
+const Subscription = require('./models/subscription')
 const port = process.env.PORT || 5500;
 
 
+mongoose
+    .connect(process.env.DATABASE)
+    .then(() => console.log('DB connected'))
+    .catch((err) => console.log('DB Error => ', err));
 
 
 app.use(cors());
 app.options("*", cors({ origin: true }));
-app.use(express.raw())
-app.post('/webhook', async (request, response) => {
+
+app.post('/webhook', express.raw({ type: "*/*" }), async (request, response) => {
     const endpointSecret = process.env.STRIPE_WEBSECRET;
     const stripePayload = request.body;
     console.log('THIS IS PAYLOAD', stripePayload);
