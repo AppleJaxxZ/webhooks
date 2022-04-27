@@ -44,24 +44,24 @@ app.post('/webhook', express.raw({ type: "*/*" }), async (request, response) => 
             // Then define and call a function to handle the event payment_intent.succeeded
             // console.log("CUSTOMER ID", customerId)
             // const subscription = await stripe.subscriptions.retrieve(subId);
-            const customer = await Subscription.findOneAndUpdate(
-                { stripe_id: subId },
-                { subObject },
-                { new: true, overwrite: true }
-            );
-            console.log('FOUND CUSTOMER SUB', customer);
+            // const customer = await Subscription.findOneAndUpdate(
+            //     { stripe_id: subId },
+            //     { subObject },
+            //     { new: true, overwrite: true }
+            // );
+            // console.log('FOUND CUSTOMER SUB', customer);
             break;
 
         case 'customer.subscription.updated':
             const subScriptId = event.data.object.subscription;
             const subObj = event.data.object;
-            console.log('THIS IS THE SUBSCRIPTION OBJECT ID', subScriptId);
-            // const subScript = await stripe.subscriptions.retrieve(subScriptId);
-            const customerSub = await Subscription.findOneAndUpdate(
-                { stripe_id: subScriptId },
-                { subObj },
-                { new: true, overwrite: true }
-            );
+            // console.log('THIS IS THE SUBSCRIPTION OBJECT ID', subScriptId);
+            // // const subScript = await stripe.subscriptions.retrieve(subScriptId);
+            // const customerSub = await Subscription.findOneAndUpdate(
+            //     { stripe_id: subScriptId },
+            //     { subObj },
+            //     { new: true, overwrite: true }
+            // );
 
 
 
@@ -71,11 +71,12 @@ app.post('/webhook', express.raw({ type: "*/*" }), async (request, response) => 
             const customerObject = event.data.object;
             console.log("CUSTOMER'S ID FROM WEBHOOK", customerObject);
 
-            const customerUpdate = await User.findOneAndUpdate(
-                { stripe_customer_id: customerId },
-                { customerObject },
-                { new: true, overwrite: true }
-            );
+            // const customerUpdate = await User.findOneAndUpdate(
+            //     { stripe_customer_id: customerId },
+            //     { customerObject },
+            //     { new: true, overwrite: true },
+
+            // );
 
             break;
 
