@@ -8,6 +8,7 @@ require('dotenv').config()
 const User = require('./models/user')
 const Subscription = require('./models/subscription')
 const port = process.env.PORT || 5500;
+const Test = require('./models/testing')
 
 
 mongoose
@@ -18,6 +19,15 @@ mongoose
 
 app.use(cors());
 app.options("*", cors({ origin: true }));
+
+app.post('/test', express.json(), express.urlencoded({ extended: true }), async (request, response) => {
+    const data = request.body
+    console.log(data)
+    const person = new Test(data)
+    await person.save();
+
+    response.json(data)
+})
 
 app.post('/webhook', express.raw({ type: "*/*" }), async (request, response) => {
     const endpointSecret = process.env.STRIPE_WEBSECRET;
@@ -40,28 +50,28 @@ app.post('/webhook', express.raw({ type: "*/*" }), async (request, response) => 
         case 'subscription_schedule.updated':
             const subId = event.data.object.subscription;
             const subObject = event.data.object;
-            console.log('THIS IS THE SUBSCRIPTION OBJECT', subId);
-            // Then define and call a function to handle the event payment_intent.succeeded
-            // console.log("CUSTOMER ID", customerId)
-            // const subscription = await stripe.subscriptions.retrieve(subId);
-            // const customer = await Subscription.findOneAndUpdate(
-            //     { stripe_id: subId },
-            //     { subObject },
-            //     { new: true, overwrite: true }
-            // );
-            // console.log('FOUND CUSTOMER SUB', customer);
+
+            // // Then define and call a function to handle the event payment_intent.succeeded
+
+
+            const customer = await Subscription.findOneAndUpdate(
+                { stripe_id: subId },
+                subObject,
+                { new: true }
+            );
+            console.log('FOUND CUSTOMER SUB', customer);
             break;
 
         case 'customer.subscription.updated':
-            const subScriptId = event.data.object.subscription;
+            const subScriptId = event.data.object.id;
+
             const subObj = event.data.object;
-            // console.log('THIS IS THE SUBSCRIPTION OBJECT ID', subScriptId);
-            // // const subScript = await stripe.subscriptions.retrieve(subScriptId);
-            // const customerSub = await Subscription.findOneAndUpdate(
-            //     { stripe_id: subScriptId },
-            //     { subObj },
-            //     { new: true, overwrite: true }
-            // );
+
+            const customerSub = await Subscription.findOneAndUpdate(
+                { stripe_id: subScriptId },
+                subObj,
+                { new: true }
+            );
 
 
 
@@ -71,12 +81,16 @@ app.post('/webhook', express.raw({ type: "*/*" }), async (request, response) => 
             const customerObject = event.data.object;
             console.log("CUSTOMER'S ID FROM WEBHOOK", customerObject);
 
-            // const customerUpdate = await User.findOneAndUpdate(
-            //     { stripe_customer_id: customerId },
-            //     { customerObject },
-            //     { new: true, overwrite: true },
+            const findCustomer = await User.findOne({ stripe_customer_id: customerId })
+            console.log(findCustomer)
+            const customerUpdate = await User.findOneAndUpdate(
+                { stripe_customer_id: customerId },
+                { name: customerObject.name, email: customerObject.email, phoneNumber: customerObject.phone, pinNumber: customerObject.metadata.pinNumber, dateOfBirth: customerObject.metadata.dateOfBirth },
 
-            // );
+
+            );
+
+
 
             break;
 
