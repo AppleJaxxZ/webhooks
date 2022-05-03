@@ -99,7 +99,7 @@ app.post('/webhook', express.raw({ type: "*/*" }), async (request, response) => 
             console.log(`Unhandled event type ${event.type}`);
     }
 
-    // Return a 200 response to acknowledge receipt of the event
+    // Return a 200 response to acknowledge receipt of the even
     response.send('Success!');
 })
 
