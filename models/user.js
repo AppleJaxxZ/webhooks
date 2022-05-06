@@ -15,7 +15,6 @@ const userSchema = new Schema(
         ref: 'Subscription',
       },
     ],
-
     name: {
       type: String,
       trim: true,
