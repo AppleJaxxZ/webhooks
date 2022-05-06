@@ -90,8 +90,6 @@ app.post('/webhook', express.raw({ type: "*/*" }), async (request, response) => 
 
             );
 
-
-
             break;
 
         // ... handle other event types
