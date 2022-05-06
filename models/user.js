@@ -7,6 +7,8 @@ const customDateValidator = [
   'Please enter a validate date of birth in mm/dd/yyy format including the slashes.',
 ];
 
+
+
 const userSchema = new Schema(
   {
     subscriptions: [
