@@ -91,7 +91,19 @@ app.post('/webhook', express.raw({ type: "*/*" }), async (request, response) => 
             );
 
             break;
+        case 'customer.subscription.deleted':
+            const subscriptId = event.data.object.subscription;
+            const subscriptObject = event.data.object;
 
+            // // Then define and call a function to handle the event payment_intent.succeeded
+
+
+            const deletedSub = await Subscription.findOneAndUpdate(
+                { stripe_id: subscriptId },
+                subscriptObject,
+                { new: true }
+            );
+            console.log(deletedSub);
 
         // ... handle other event types
         default:
