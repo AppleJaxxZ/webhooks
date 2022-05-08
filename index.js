@@ -50,6 +50,7 @@ app.post('/webhook', express.raw({ type: "*/*" }), async (request, response) => 
         case 'subscription_schedule.updated':
             const subId = event.data.object.subscription;
             const subObject = event.data.object;
+            console.log(subId)
 
             // // Then define and call a function to handle the event payment_intent.succeeded
 
@@ -98,9 +99,8 @@ app.post('/webhook', express.raw({ type: "*/*" }), async (request, response) => 
             // // Then define and call a function to handle the event payment_intent.succeeded
 
 
-            const deletedSub = await Subscription.findOneAndUpdate(
+            const deletedSub = await Subscription.findOneAndDelete(
                 { stripe_id: subscriptId },
-                subscriptObject,
                 { new: true }
             );
             console.log(deletedSub);
