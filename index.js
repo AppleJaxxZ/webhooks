@@ -105,6 +105,7 @@ app.post('/webhook', express.raw({ type: "*/*" }), async (request, response) => 
             );
             console.log(deletedSub);
 
+
         // ... handle other event types
         default:
             console.log(`Unhandled event type ${event.type}`);
